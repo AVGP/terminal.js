@@ -36,13 +36,23 @@
                      "<ul>" +
                      "<li><strong>help</strong> - display this help.</li>" +
                      "<li><strong>hello NAME</strong> - displays a greeting for NAME.</li>" +
-                     "</ul>";
+                     "<li><strong>wiki SUBJECT</li> - show wikipedia article for SUBJECT (may contain spaces)" +
+                     "</ul></div>";
         return output;
       };
-      
+
       commands.hello = function(args) {
         if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
         return "Hello " + args[1];
+      };
+
+      commands.wiki = function(args) {
+        args.shift();
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", "http://cors.io/en.wikipedia.org/w/api.php?format=xml&action=parse&page=" + args.join(" "), false);
+        xhr.send();
+        if(xhr.status !== 200) return "<p style=\"color: red\">Failed :(</p>";
+        return xhr.responseXML.querySelector("text").textContent;
       };
       
       terminal.init(document.getElementById("terminal"), commands);
