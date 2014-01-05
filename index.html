@@ -51,7 +51,7 @@
         var xhr = new XMLHttpRequest();
         xhr.open("get", "http://cors.io/en.wikipedia.org/w/api.php?format=xml&action=parse&page=" + args.join(" "), false);
         xhr.send();
-        if(xhr.status !== 200) return "<p style=\"color: red\">Failed :(</p>";
+        if(xhr.status !== 200 || xhr.responseXML.querySelector("text")) return "<p style=\"color: red\">Failed :(</p>";
         return xhr.responseXML.querySelector("text").textContent;
       };
       
