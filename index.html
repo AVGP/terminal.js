@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Terminal.js Demo</title>
+    <link rel="stylesheet" href="terminal.css">
+    <style>
+      body {
+        background: black;
+        color:      white;
+        
+        width:  100%;
+        height: 100%;
+        
+        padding: 0;
+        margin:  0;
+        
+        box-sizing: border-box;        
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Terminal.js Demo</h1>
+    <div id="terminal">
+      <p>Type 'help' to get started.</p>
+      <p class="hidden">
+        <span class="prompt">guest@terminal.js &sim; &gt; </span>
+        <span contenteditable="true" class="input"> </span>
+      </p>
+    </div>
+    <script src="terminal.js"></script>
+    <script>
+      var commands = {};
+      
+      commands.help = function() {
+        var output = "<div>" +
+                     "<ul>" +
+                     "<li><strong>help</strong> - display this help.</li>" +
+                     "<li><strong>hello NAME</strong> - displays a greeting for NAME.</li>" +
+                     "</ul>";
+        return output;
+      };
+      
+      commands.hello = function(args) {
+        if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
+        return "Hello " + args[1];
+      };
+      
+      terminal.init(document.getElementById("#terminal"), commands);
+    </script>
+  </body>
+</html>
