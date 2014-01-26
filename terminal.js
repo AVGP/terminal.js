@@ -27,13 +27,39 @@ var terminal = (function() {
     };
 
     var browseHistory = function(prompt, direction) {
+        var changedPrompt = false;
         if(direction == KEY_UP && historyIndex > 0) {
             prompt.textContent = history[--historyIndex];
+            changedPrompt = true;
         } else if(direction == KEY_DOWN) {
             if(historyIndex < history.length) ++historyIndex;
             if(historyIndex < history.length) prompt.textContent = history[historyIndex];
             else prompt.textContent = " ";
+            changedPrompt = true;
         }
+        
+        if(changedPrompt) {
+            var range = document.createRange();
+            var sel = window.getSelection();
+            range.setStart(prompt.childNodes[0], prompt.textContent.length);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    };
+
+    var autoCompleteInput = function(input) {
+        var cmds        = self.commands,
+            re          = new RegExp("^" + input, "ig"),
+            suggestions = [];
+        console.log("*" + input + "*", cmds);
+        for(var cmd in cmds) {
+            console.log(cmd);
+            if(cmds.hasOwnProperty(cmd) && cmd.match(re)) {
+                suggestions.push(cmd);
+            }
+        }
+        return suggestions;
     };
 
     // Terminal functions
@@ -41,9 +67,28 @@ var terminal = (function() {
     self.init = function(elem, commands) {
         self.commands = commands;
     
+        elem.addEventListener("keydown", function(event) {
+            if(event.keyCode == 9) { //TAB was hit
+                var prompt = event.target;
+                var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
+                
+                if(suggestions.length == 1) {
+                    prompt.textContent = suggestions[0];
+                    var range = document.createRange();
+                    var sel = window.getSelection();
+                    range.setStart(prompt.childNodes[0], suggestions[0].length);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+                
+                event.preventDefault(true);
+                return false;
+            }
+        });
+    
         elem.addEventListener("keyup", function(event) {
             if(historyIndex < 0) return;
-            
             browseHistory(event.target, event.keyCode);
         });
         
