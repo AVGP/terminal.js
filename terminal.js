@@ -4,7 +4,8 @@ var terminal = (function() {
         self = {};
 
     var KEY_UP   = 38,
-        KEY_DOWN = 40;
+        KEY_DOWN = 40,
+        KEY_TAB  = 9;
 
     // Auxiliary functions
 
@@ -52,9 +53,7 @@ var terminal = (function() {
         var cmds        = self.commands,
             re          = new RegExp("^" + input, "ig"),
             suggestions = [];
-        console.log("*" + input + "*", cmds);
         for(var cmd in cmds) {
-            console.log(cmd);
             if(cmds.hasOwnProperty(cmd) && cmd.match(re)) {
                 suggestions.push(cmd);
             }
@@ -68,7 +67,7 @@ var terminal = (function() {
         self.commands = commands;
     
         elem.addEventListener("keydown", function(event) {
-            if(event.keyCode == 9) { //TAB was hit
+            if(event.keyCode == KEY_TAB) {
                 var prompt = event.target;
                 var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
                 
