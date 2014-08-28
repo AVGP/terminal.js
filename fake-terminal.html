@@ -1,0 +1,43 @@
+<link rel="stylesheet" href="terminal.css">
+  
+<template>
+  <div id="terminal">
+    <p>Type 'help' to get started.</p>
+    <p class="hidden">
+      <span class="prompt"><content></content></span>
+      <span contenteditable="true" class="input"> </span>
+    </p>
+  </div>
+</template>
+<script src="terminal.js"></script>
+<script>
+  var FakeTerminal = undefined, currentScript = document.currentScript;
+  (function() {
+
+    var elemPrototype = Object.create(HTMLElement.prototype);
+    Object.defineProperty(elemPrototype, "commands", { 
+      get: function() { return this.terminal.commands; }, 
+      set: function(newCommands) { this.terminal.commands = newCommands; }
+    });
+
+    elemPrototype.createdCallback = function() {
+      this.root = this.createShadowRoot();
+      var tplContent = currentScript.ownerDocument.querySelector("template").content,
+          node       = document.importNode(tplContent, true);
+
+      this.root.appendChild(node);
+    };
+    
+    elemPrototype.attachedCallback = function() {
+        this.terminal        = Terminal.init(this.root.getElementById("terminal"), {});
+        this.terminal.prompt = this.root.querySelector("content").getDistributedNodes()[0].textContent;
+    };
+    
+    elemPrototype.attributeChangedCallback = function(attrName, oldVal, newVal) {
+      console.log(attrName, oldVal, newVal);
+      if(attrName == "commands") { this.terminal.commands = newVal; }
+    };
+
+    FakeTerminal = document.registerElement("fake-terminal", { prototype: elemPrototype });
+  }());
+</script>
