@@ -17,7 +17,7 @@ fake-terminal::shadow #terminal {
 fake-terminal::shadow #terminal .input {
     height:         1em;
     min-width:      1em;
-    outline-color:  black;
+    outline-color:  transparent;
     border:         none;
     display:        inline-block;
 }
