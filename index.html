@@ -29,6 +29,8 @@
     </div>
     <script src="terminal.js"></script>
     <script>
+    
+    
       var commands = {};
       
       commands.help = function() {
@@ -36,7 +38,7 @@
                      "<ul>" +
                      "<li><strong>help</strong> - display this help.</li>" +
                      "<li><strong>hello NAME</strong> - displays a greeting for NAME.</li>" +
-                     "<li><strong>wiki SUBJECT</li> - show wikipedia article for SUBJECT (may contain spaces)" +
+                     "<li><strong>weather LOCATION</strong> - show weather for LOCATION</li>" +
                      "</ul></div>";
         return output;
       };
@@ -46,15 +48,19 @@
         return "Hello " + args[1];
       };
 
-      commands.wiki = function(args) {
+      commands.weather = function(args) {
         args.shift();
         var xhr = new XMLHttpRequest();
-        xhr.open("get", "http://corsproxy.com/en.wikipedia.org/w/api.php?format=xml&action=parse&page=" + args.join(" "), false);
+        xhr.open("get", "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + args.join(" "), false);
         xhr.send();
-        if(xhr.status !== 200 || !xhr.responseXML.querySelector("text")) return "<p style=\"color: red\">Failed :(</p>";
-        return xhr.responseXML.querySelector("text").textContent;
+        if(xhr.status !== 200) return "Error :(";
+        weather = JSON.parse(xhr.responseText);
+        return "<p><img style=\"vertical-align: middle\" src=\"http://openweathermap.org/img/w/" + 
+               weather.weather[0].icon + ".png\">" + 
+               weather.weather[0].description + ", " + 
+               weather.main.temp + " &deg;C</p>"
       };
-      
+
       Terminal.init(document.getElementById("terminal"), commands);
     </script>
   </body>
