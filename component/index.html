@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Terminal.js Demo</title>
+    <style>
+      body {
+        background: black;
+        color:      white;
+        
+        width:  100%;
+        height: 100%;
+        
+        padding: 0;
+        margin:  0;
+        
+        box-sizing: border-box;        
+      }
+    </style>
+    <link rel="import" href="fake-terminal.html">
+  </head>
+  <body>
+    <h1>Terminal.js Demo</h1>
+    <fake-terminal>guest@terminal.js &sim; &gt;</fake-terminal>
+    <script>
+      var commands = {};
+      
+      commands.help = function() {
+        var output = "<div>" +
+                     "<ul>" +
+                     "<li><strong>help</strong> - display this help.</li>" +
+                     "<li><strong>hello NAME</strong> - displays a greeting for NAME.</li>" +
+                     "<li><strong>wiki SUBJECT</li> - show wikipedia article for SUBJECT (may contain spaces)" +
+                     "</ul></div>";
+        return output;
+      };
+
+      commands.hello = function(args) {
+        if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
+        return "Hello " + args[1];
+      };
+
+      commands.wiki = function(args) {
+        args.shift();
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", "http://corsproxy.com/en.wikipedia.org/w/api.php?format=xml&action=parse&page=" + args.join(" "), false);
+        xhr.send();
+        if(xhr.status !== 200 || !xhr.responseXML.querySelector("text")) return "<p style=\"color: red\">Failed :(</p>";
+        return xhr.responseXML.querySelector("text").textContent;
+      };
+      
+      document.querySelector("fake-terminal").commands = commands;
+    </script>
+  </body>
+</html>
