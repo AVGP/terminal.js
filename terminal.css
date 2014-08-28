@@ -4,7 +4,7 @@
 * Terminal container.
 * Important note: The "VT323" font face comes from Google web fonts.
 */
-fake-terminal::shadow #terminal {
+#terminal {
     font-family: 'VT323', cursive;
     width:       100%; 
     height:      100%;
@@ -14,7 +14,7 @@ fake-terminal::shadow #terminal {
 * The input span where the input happens.
 * Also applied to the previous inputs made in the current session.
 */
-fake-terminal::shadow #terminal .input {
+#terminal .input {
     height:         1em;
     min-width:      1em;
     outline-color:  black;
@@ -22,7 +22,7 @@ fake-terminal::shadow #terminal .input {
     display:        inline-block;
 }
 
-fake-terminal::shadow #terminal p {
+#terminal p {
     margin:     0;
     padding:    0;
 }
