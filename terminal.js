@@ -1,4 +1,4 @@
-var terminal = (function() {
+var Terminal = (function() {
     var history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []),
         historyIndex = history.length;
         self = {};
@@ -11,14 +11,17 @@ var terminal = (function() {
 
     var resetPrompt = function(terminal, prompt) {
         var newPrompt = prompt.parentNode.cloneNode(true);
-        prompt.setAttribute("contenteditable", false);        
+        prompt.setAttribute("contenteditable", false);
+        if(self.prompt) {
+            newPrompt.querySelector(".prompt").textContent = self.prompt;
+        }
         terminal.appendChild(newPrompt);
         newPrompt.querySelector(".input").innerHTML = " ";
-        newPrompt.querySelector(".input").focus();        
+        newPrompt.querySelector(".input").focus();
     };
 
     var runCommand = function(terminal, cmd, args) {
-        terminal.innerHTML += (self.commands[cmd](args));        
+        terminal.innerHTML += (self.commands[cmd](args));
     };
 
     var updateHistory = function(cmd) {
@@ -38,7 +41,7 @@ var terminal = (function() {
             else prompt.textContent = " ";
             changedPrompt = true;
         }
-        
+
         if(changedPrompt) {
             var range = document.createRange();
             var sel = window.getSelection();
@@ -70,7 +73,7 @@ var terminal = (function() {
             if(event.keyCode == KEY_TAB) {
                 var prompt = event.target;
                 var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
-                
+
                 if(suggestions.length == 1) {
                     prompt.textContent = suggestions[0];
                     var range = document.createRange();
@@ -80,7 +83,7 @@ var terminal = (function() {
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
-                
+
                 event.preventDefault(true);
                 return false;
             }
@@ -90,23 +93,24 @@ var terminal = (function() {
             if(historyIndex < 0) return;
             browseHistory(event.target, event.keyCode);
         });
-        
+
         elem.addEventListener("keypress", function(event) {
             var prompt = event.target;
             if(event.keyCode != 13) return false;
-            
-            updateHistory(prompt.textContent); 
-            
+
+            updateHistory(prompt.textContent);
+
             var input = prompt.textContent.split(" ");
-            if(input[0] && input[0] in commands) {
+            if(input[0] && input[0] in self.commands) {
                 runCommand(elem, input[0], input);
             }
 
             resetPrompt(elem, prompt);
             event.preventDefault();
         });
-        
+
         elem.querySelector(".input").focus();
+        return self;
     };
     
     return self;
