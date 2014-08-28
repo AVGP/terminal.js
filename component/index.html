@@ -2,7 +2,6 @@
 <html>
   <head>
     <title>Terminal.js Demo</title>
-    <link rel="stylesheet" href="terminal.css">
     <style>
       body {
         background: black;
@@ -17,17 +16,11 @@
         box-sizing: border-box;        
       }
     </style>
+    <link rel="import" href="fake-terminal.html">
   </head>
   <body>
     <h1>Terminal.js Demo</h1>
-    <div id="terminal">
-      <p>Type 'help' to get started.</p>
-      <p class="hidden">
-        <span class="prompt">guest@terminal.js &sim; &gt; </span>
-        <span contenteditable="true" class="input"> </span>
-      </p>
-    </div>
-    <script src="terminal.js"></script>
+    <fake-terminal>guest@terminal.js &sim; &gt;</fake-terminal>
     <script>
       var commands = {};
       
@@ -55,7 +48,7 @@
         return xhr.responseXML.querySelector("text").textContent;
       };
       
-      Terminal.init(document.getElementById("terminal"), commands);
+      document.querySelector("fake-terminal").commands = commands;
     </script>
   </body>
 </html>
