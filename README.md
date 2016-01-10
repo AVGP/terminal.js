@@ -19,9 +19,30 @@ You can do a bunch of things with it:
 ## How do I use it?
 It's really easy:
 
-1. You include the ``terminal.css`` and ``terminal.js`` files and have a container element (e.g. a div) with a contenteditable element of class ``input`` inside in your HTML document.
+1. You include the ``terminal.css`` and ``terminal.js`` files and have a container element (e.g. a div) with a child element holding a contenteditable element of class ``input`` and another span with the actual prompt line you wanna display.
 2. You create an object with methods that will be your commands (see below for the details of how this works)
 3. Call terminal.init and pass the container element and your commands object - **Ready to roll!**
+
+Here's a minimal example:
+
+```html
+  <div id="myterminal">
+    <p>
+      <span>$> </span>
+      <span contenteditable="true" class="input"></span>
+    </p>    
+  </div>
+  <script src="terminal.js"></script>
+  <script>
+    var commands = {
+      hi: function() {
+        return '<p>Hi there!</p>'
+      }
+    }
+    
+    Terminal.init(document.getElementById("myterminal"), commands)
+  </script>
+```
 
 ## Extensible command interface
 
